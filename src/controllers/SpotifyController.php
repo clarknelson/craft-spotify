@@ -15,6 +15,17 @@ use craft\web\Controller;
 class SpotifyController extends Controller
 {
 
+    // https://clarknelson.com.ddev.site/actions/craft-spotify/spotify/auth
+    public function actionAuth()
+    {
+        $service = CraftSpotify::getInstance()->spotify;
+        $state = $service->session->generateState();
+        $options = $service->getAuthOptions($state);
+        // dump($service->session->getAuthorizeUrl($options));
+        // return 0;
+        return $this->redirect($service->session->getAuthorizeUrl($options));
+    }
+
     // https://clarknelson.com.ddev.site/actions/craft-spotify/spotify/callback
     public function actionCallback()
     {
@@ -33,7 +44,7 @@ class SpotifyController extends Controller
 
             return $this->redirect('/');
         } else {
-            $options = $service->getAuthOptions();
+            $options = $service->getAuthOptions(null);
             return $this->redirect($service->session->getAuthorizeUrl($options));
         }
         return 0;

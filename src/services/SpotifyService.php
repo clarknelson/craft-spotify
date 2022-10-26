@@ -12,7 +12,6 @@ class SpotifyService extends Component
     // public $defaultListId = null;
 
     public $authUrl = null;
-    public $spotifyState = null;
 
     public $accessToken = null;
     public $refreshToken = null;
@@ -95,9 +94,7 @@ class SpotifyService extends Component
         }
     }
 
-    public function getAuthOptions($state){
-
-        $state = $state ?? $this->spotifyState ?? null;
+    public function getAuthOptions($state = null){
         return [
             // @TODO: probably do not need all of these
             // and they should be read in from a list in the settings.
@@ -129,7 +126,7 @@ class SpotifyService extends Component
             $this->session = new \SpotifyWebAPI\Session(
                 $clientId,
                 $clientSecret,
-                UrlHelper::siteUrl() . '/actions/craft-spotify/spotify/callback'
+                UrlHelper::siteUrl() . 'actions/craft-spotify/spotify/callback'
             );
         }
     }

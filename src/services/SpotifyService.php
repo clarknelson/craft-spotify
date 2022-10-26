@@ -19,10 +19,9 @@ class SpotifyService extends Component
 
     public $session = null;
 
+    private $api = null;
 
-
-    public function getMyTop($type = 'artists', $options = [ 'limit' => 20, 'offset' => 0, 'time_range' => 'medium_term' ]){
-
+    private function buildAPI(){
         $session = \Craft::$app->getSession();
 
         // Use previously requested tokens fetched from somewhere. A database for example.
@@ -36,36 +35,60 @@ class SpotifyService extends Component
             $session->refreshAccessToken($refreshToken);
         }
 
-        $api = new \SpotifyWebAPI\SpotifyWebAPI([
-            'auto_refresh' => true,
-        ], $this->session);
+        if(!$this->api){
+            $this->api = new \SpotifyWebAPI\SpotifyWebAPI([
+                'auto_refresh' => true,
+            ], $this->session);
 
-        $newAccessToken = $this->session->getAccessToken();
-        $newRefreshToken = $this->session->getRefreshToken();
+            // @TODO: i'm not totally sure what to do here
+            // these should like be checked / saved against existing tokens
+            $newAccessToken = $this->session->getAccessToken();
+            $newRefreshToken = $this->session->getRefreshToken();
+        }
 
         // $api->setAccessToken($session->get('accessToken'));
+    }
 
+    public function getMyTop($type = 'artists', $options = [ 'limit' => 20, 'offset' => 0, 'time_range' => 'medium_term' ]){
+        $this->buildAPI();
+   
         if($type != 'tracks' || $type != 'artists'){
             $type = 'artists';
         }
 
         try{
-            return $api->getMyTop($type, $options)->items;
+            return $this->api->getMyTop($type, $options)->items;
         } catch(\SpotifyWebAPI\SpotifyWebAPIException $e){
             dump($e);
             return [];
         }
     }
 
-
-    public function getMyCurrentTrack($options = []){
-
-        $session = \Craft::$app->getSession();
-        $api = new \SpotifyWebAPI\SpotifyWebAPI();
-        $api->setAccessToken($session->get('accessToken'));
+    public function getTrack($id){
+        $this->buildAPI();
 
         try{
-            return $api->getMyCurrentTrack($options);
+            return $this->api->getTrack($id);
+        } catch(\SpotifyWebAPI\SpotifyWebAPIException $e){
+            dump($e);
+        }
+    }
+
+    public function getMe(){
+        $this->buildAPI();
+
+        try{
+            return $this->api->me();
+        } catch(\SpotifyWebAPI\SpotifyWebAPIException $e){
+            dump($e);
+        }
+    }
+
+    public function getMyCurrentTrack($options = []){
+        $this->buildAPI();
+
+        try{
+            return $this->api->getMyCurrentTrack($options);
         } catch(\SpotifyWebAPI\SpotifyWebAPIException $e){
             dump($e);
             return null;

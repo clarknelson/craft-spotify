@@ -1,0 +1,19 @@
+{% import '_includes/forms.twig' as forms %}
+
+{{ forms.textField({
+  first: true,
+  label: 'Client Id',
+  name: 'clientId',
+  value: settings.clientId,
+  instructions: '',
+  placeholder: '206ec0a6868041ae888ab3bdcf5a7eb5',
+  required: true,
+}) }}
+
+{{ forms.textField({
+  label: 'Client Secret',
+  name: 'clientSecret',
+  instructions: '',
+  placeholder: '78395548717358aeb4b9ca7eec9355ee',
+  value: settings.clientSecret,
+}) }}

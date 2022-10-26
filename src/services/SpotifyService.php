@@ -4,6 +4,7 @@ namespace clarknelson\spotify\services;
 use clarknelson\spotify\Plugin as CraftSpotify;
 use yii\base\Component;
 use craft\helpers\App;
+use craft\helpers\UrlHelper;
 
 class SpotifyService extends Component
 {
@@ -38,7 +39,6 @@ class SpotifyService extends Component
         $api = new \SpotifyWebAPI\SpotifyWebAPI([
             'auto_refresh' => true,
         ], $this->session);
-
 
         $newAccessToken = $this->session->getAccessToken();
         $newRefreshToken = $this->session->getRefreshToken();
@@ -101,12 +101,12 @@ class SpotifyService extends Component
         if(!$clientSecret){
             throw new \Exception('Spotify Client Secret Key is not set.');
         }
-
+        
         if(!$this->session){
             $this->session = new \SpotifyWebAPI\Session(
                 $clientId,
                 $clientSecret,
-                'https://clarknelson.com.ddev.site/actions/craft-spotify/spotify/callback'
+                UrlHelper::siteUrl() . '/actions/craft-spotify/spotify/callback'
             );
         }
     }

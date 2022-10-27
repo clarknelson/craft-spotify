@@ -1,12 +1,16 @@
 {% import '_includes/forms.twig' as forms %}
 
+<p>Both of the following keys can be generate from the <a href="https://developer.spotify.com/dashboard/applications">Spotify Application Dashboard</a> </p>
+
+<p>When adding a new application, please make sure the redirect URL is set to the following:<br/> <code>{{ siteUrl }}actions/craft-spotify/spotify/callback</code><br/>for each domain, website, or enviornment the application will run in.</p>
+
 {{ forms.textField({
   first: true,
   label: 'Client Id',
   name: 'clientId',
-  value: settings.clientId,
   instructions: '',
   placeholder: '206ec0a6868041ae888ab3bdcf5a7eb5',
+  value: settings.clientId,
   required: true,
 }) }}
 
@@ -16,4 +20,8 @@
   instructions: '',
   placeholder: '78395548717358aeb4b9ca7eec9355ee',
   value: settings.clientSecret,
+  required: true,
 }) }}
+
+<p>Once both of the keys have been saved, click the button to authorize the application for the website.<br/> If everything is successful you should be redirected to the homepage.</p>
+<a class="btn" style="background: #1DB954; color: white" href="{{siteUrl}}actions/craft-spotify/spotify/auth" target="_blank">Authorize Spotify</a>

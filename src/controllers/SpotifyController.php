@@ -14,15 +14,15 @@ use craft\web\Controller;
 
 class SpotifyController extends Controller
 {
-
     // https://clarknelson.com.ddev.site/actions/craft-spotify/spotify/auth
     public function actionAuth()
     {
         $service = CraftSpotify::getInstance()->spotify;
+        $session = Craft::$app->getSession();
+        
         $state = $service->session->generateState();
+        $session->set('storedState', $state);
         $options = $service->getAuthOptions($state);
-        // dump($service->session->getAuthorizeUrl($options));
-        // return 0;
         return $this->redirect($service->session->getAuthorizeUrl($options));
     }
 
@@ -32,22 +32,22 @@ class SpotifyController extends Controller
         $service = CraftSpotify::getInstance()->spotify;
         $session = Craft::$app->getSession();
 
-        if (isset($_GET['code'])) {
-            // Request a access token using the code from Spotify
-            $service->session->requestAccessToken($_GET['code']);
-
-            $service->accessToken = $service->session->getAccessToken();
-            $service->refreshToken = $service->session->getRefreshToken();
-
-            $session->set('accessToken', $service->session->getAccessToken());
-            $session->set('refreshToken', $service->session->getRefreshToken());
-
-            return $this->redirect('/');
-        } else {
-            $options = $service->getAuthOptions(null);
-            return $this->redirect($service->session->getAuthorizeUrl($options));
+        $state = $_GET['state'];
+        $storedState = $session->get('storedState');
+        if ($state !== $storedState) {
+            throw new \Exception('State mismatch');
         }
-        return 0;
+
+        // Request a access token using the code from Spotify
+        $service->session->requestAccessToken($_GET['code']);
+
+        $service->accessToken = $service->session->getAccessToken();
+        $service->refreshToken = $service->session->getRefreshToken();
+
+        $session->set('accessToken', $service->session->getAccessToken());
+        $session->set('refreshToken', $service->session->getRefreshToken());
+
+        return $this->redirect('/');
     }
 
     // https://clarknelson.com.ddev.site/actions/craft-spotify/spotify/testing

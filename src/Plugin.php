@@ -4,6 +4,7 @@ namespace clarknelson\spotify;
 use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
 
+use clarknelson\spotify\models\Settings;
 use clarknelson\spotify\services\SpotifyService;
 
 class Plugin extends \craft\base\Plugin
@@ -48,7 +49,7 @@ class Plugin extends \craft\base\Plugin
 
     protected function createSettingsModel(): ?\craft\base\Model
     {
-        return new \clarknelson\spotify\models\Settings();
+        return new Settings();
     }
     protected function settingsHtml(): ?string
     {

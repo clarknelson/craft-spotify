@@ -44,8 +44,8 @@ class SpotifyController extends Controller
         $service->accessToken = $service->session->getAccessToken();
         $service->refreshToken = $service->session->getRefreshToken();
 
-        $session->set('accessToken', $service->session->getAccessToken());
-        $session->set('refreshToken', $service->session->getRefreshToken());
+        CraftSpotify::getInstance()->settings->accessToken = $service->accessToken;
+        CraftSpotify::getInstance()->settings->refreshToken = $service->accessToken;
 
         return $this->redirect('/');
     }

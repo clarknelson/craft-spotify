@@ -8,6 +8,8 @@ class Settings extends Model
 {
     public $clientId = null;
     public $clientSecret = null;
+    public $accessToken = null;
+    public $refreshToken = null;
 
     public function rules(): array
     {

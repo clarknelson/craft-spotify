@@ -23,15 +23,15 @@ class SpotifyService extends Component
     private function buildAPI(){
         $session = \Craft::$app->getSession();
 
-        // Use previously requested tokens fetched from somewhere. A database for example.
-        $accessToken = $session->get('accessToken');
-        $refreshToken = $session->get('refreshToken');
+        $accessToken = CraftSpotify::getInstance()->settings->accessToken;
+        $refreshToken = CraftSpotify::getInstance()->settings->refreshToken;
+
         if ($accessToken) {
             $this->session->setAccessToken($accessToken);
             $this->session->setRefreshToken($refreshToken);
         } else {
             // Or request a new access token
-            $session->refreshAccessToken($refreshToken);
+            $this->session->refreshAccessToken($refreshToken);
         }
 
         if(!$this->api){
@@ -39,10 +39,9 @@ class SpotifyService extends Component
                 'auto_refresh' => true,
             ], $this->session);
 
-            // @TODO: i'm not totally sure what to do here
-            // these should like be checked / saved against existing tokens
-            $newAccessToken = $this->session->getAccessToken();
-            $newRefreshToken = $this->session->getRefreshToken();
+            // over-ride the existing access / refresh tokens
+            CraftSpotify::getInstance()->settings->accessToken = $this->session->getAccessToken();
+            CraftSpotify::getInstance()->settings->refreshToken = $this->session->getRefreshToken();
         }
 
         // $api->setAccessToken($session->get('accessToken'));

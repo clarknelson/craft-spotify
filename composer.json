@@ -36,9 +36,7 @@
     "extra": {
       "name": "Craft Spotify",
       "handle": "craft-spotify",
-      "hasCpSettings": true,
-      "class": "clarknelson\\spotify\\Plugin",
-      "basePath": "src"
+      "hasCpSettings": true
     },
     "config": {
       "allow-plugins": {
